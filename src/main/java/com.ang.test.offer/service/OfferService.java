@@ -1,14 +1,12 @@
 package com.ang.test.offer.service;
 
 import com.ang.test.offer.domain.Offer;
-import com.ang.test.offer.domain.Product;
 import com.ang.test.offer.dto.OfferDTO;
-import com.ang.test.offer.dto.ProductDTO;
 import com.ang.test.offer.repository.OfferRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,55 +18,63 @@ public class OfferService {
     private OfferRepository offerRepository;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     public OfferService(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
     }
 
-    public List<Offer> findAll(Date activeOn) {
-        return offerRepository.findAll();
+    /**
+     * This method was changed to private
+     */
+    private List<Offer> findAll(Date activeOn) {
+        if ( activeOn == null ) {
+            activeOn = new Date(System.currentTimeMillis());
+        }
+
+        return offerRepository.findAll(activeOn);
+    }
+
+    //Created by Hiram
+    public List<OfferDTO> findAll() {
+
+        List<Offer> offers = offerRepository.findAll();
+        if(offers.isEmpty())
+            return new ArrayList<>();
+
+        //Modified by Hiram
+        return offers.stream().map(offer -> modelMapper.map(offer, OfferDTO.class)).collect(Collectors.toList());
     }
 
     public List<OfferDTO> findAllDTO(Date activeOn) {
+
         List<Offer> offers = findAll(activeOn);
         if(offers.isEmpty())
             return new ArrayList<>();
-        return offers.stream().map(offer -> new OfferDTO(offer.getId()
-                , offer.getDiscountPct(), offer.getActiveFrom(), offer.getActiveUntil()
-                , offer.getProduct().getPrice().multiply(new BigDecimal("1.00").subtract(offer.getDiscountPct()))
-                , offer.getProduct().getPrice().multiply(offer.getDiscountPct())
-                , new ProductDTO(
-                    offer.getProduct().getId(),
-                    offer.getProduct().getName(),
-                    offer.getProduct().getPrice()
-        ))).collect(Collectors.toList());
+        //Modified by Hiram
+        return offers.stream().map(offer -> modelMapper.map(offer, OfferDTO.class)).collect(Collectors.toList());
     }
 
-    public Offer save(Offer offer) {
+    //The access modifer was changed to private
+    private Offer save(Offer offer) {
         return offerRepository.save(offer);
     }
 
     public OfferDTO save(OfferDTO offerDTO) {
-        Offer offer = new Offer(
-                offerDTO.getId(),
-                offerDTO.getDiscountPct(),
-                offerDTO.getActiveFrom(),
-                offerDTO.getActiveUntil(),
-                new Product(
-                        offerDTO.getProduct().getId(),
-                        offerDTO.getProduct().getName(),
-                        offerDTO.getProduct().getPrice()
-                )
-        );
+
+        //Modified by Hiram
+        Offer offer = modelMapper.map(offerDTO, Offer.class);
+
         Offer saved = save(offer);
-        return new OfferDTO(saved.getId()
-                , saved.getDiscountPct(), saved.getActiveFrom(), saved.getActiveUntil()
-                , saved.getProduct().getPrice().multiply(new BigDecimal("1.00").subtract(saved.getDiscountPct()))
-                , saved.getProduct().getPrice().multiply(saved.getDiscountPct())
-                , new ProductDTO(
-                saved.getProduct().getId(),
-                saved.getProduct().getName(),
-                saved.getProduct().getPrice()
-        ));
+
+        //Modified by Hiram
+        return modelMapper.map(saved, OfferDTO.class);
+    }
+
+    //Created by Hiram
+    public void deleteOffer(Long id) {
+        offerRepository.deleteById(id);
     }
 
 }

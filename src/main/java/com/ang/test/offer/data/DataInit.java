@@ -47,6 +47,9 @@ public class DataInit implements ApplicationRunner {
         offers.add(new Offer(null, new BigDecimal("0.30"), df.parse("08/15/2019"), df.parse("10/02/2019"), prods.get(3)));
         offers.add(new Offer(null, new BigDecimal("0.30"), df.parse("08/20/2019"), df.parse("08/22/2019"), prods.get(0)));
         offers.add(new Offer(null, new BigDecimal("0.10"), df.parse("11/20/2019"), df.parse("11/22/2019"), prods.get(4)));
+        offers.add(new Offer(null, new BigDecimal("0.20"), df.parse("12/20/2019"), df.parse("01/06/2020"), prods.get(4)));
+        offers.add(new Offer(null, new BigDecimal("0.30"), df.parse("10/01/2019"), df.parse("10/30/2019"), prods.get(4)));
+        offers.add(new Offer(null, new BigDecimal("0.50"), df.parse("01/20/2019"), null, prods.get(4)));
         offerRepository.saveAll(offers);
     }
 }

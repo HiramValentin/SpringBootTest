@@ -1,22 +1,22 @@
 package com.ang.test.offer.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@Table
+@Table(name = "OFFER")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Offer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     // 20 characters
     private Long id;
     // Not null
@@ -27,6 +27,7 @@ public class Offer {
     // Nullable (Null means that this offer will be valid for undefined time)
     private Date activeUntil;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     // Not null
     // Don't load it unless necessary
     private Product product;
