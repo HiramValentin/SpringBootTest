@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -47,5 +49,21 @@ public class OfferIntegrationTest {
         assertEquals(startSize + 1, endSize);
     }
 
+    @Test
+    public void deleteOffer() {
 
+        int startSize = offerService.findAll().size();
+
+        List<OfferDTO> offers = offerService.findAll();
+        assertTrue("There are no offers", !offers.isEmpty());
+
+        Long id = offers.get(0).getId();
+
+        offerService.deleteOffer(id);
+
+
+        int endSize = offerService.findAll().size() + 1;
+
+        assertTrue("Element not deleted", startSize == endSize);
+    }
 }

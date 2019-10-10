@@ -43,7 +43,7 @@ public class OfferService {
         if(offers.isEmpty())
             return new ArrayList<>();
 
-        //Modified by Hiram
+        //Modified by Hiram, The data was mapped with ModelMapper
         return offers.stream().map(offer -> modelMapper.map(offer, OfferDTO.class)).collect(Collectors.toList());
     }
 
@@ -52,7 +52,8 @@ public class OfferService {
         List<Offer> offers = findAll(activeOn);
         if(offers.isEmpty())
             return new ArrayList<>();
-        //Modified by Hiram
+
+        //Modified by Hiram, The data was mapped with ModelMapper
         return offers.stream().map(offer -> modelMapper.map(offer, OfferDTO.class)).collect(Collectors.toList());
     }
 
@@ -63,12 +64,12 @@ public class OfferService {
 
     public OfferDTO save(OfferDTO offerDTO) {
 
-        //Modified by Hiram
+        //Modified by Hiram, The data was mapped with ModelMapper
         Offer offer = modelMapper.map(offerDTO, Offer.class);
 
         Offer saved = save(offer);
 
-        //Modified by Hiram
+        //Modified by Hiram, The data was mapped with ModelMapper
         return modelMapper.map(saved, OfferDTO.class);
     }
 
